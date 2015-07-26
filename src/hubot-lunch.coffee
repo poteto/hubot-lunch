@@ -28,7 +28,8 @@ Let's order lunch!!!1 You can say:
 
 `beemo lunch I want the BLT Sandwich` - adds "BLT Sandwich" to the list of items to be ordered
 `beemo lunch remove my order` - removes your order
-`beemo lunch is over` - cancels all the orders
+`beemo lunch is over` - cancels all the orders (if you're Jack)
+`beemo lunch start` - starts a new lunch order (if you're Jack)
 `beemo lunch orders` - lists all orders
 `beemo lunch help` - displays this help message
 """
@@ -49,6 +50,9 @@ module.exports = (robot) ->
 
     clear: ->
       robot.brain.data.lunch = {}
+
+    isJack: (user) ->
+      user.indexOf('jack') isnt -1
 
   ##
   # List out all the orders
@@ -74,9 +78,22 @@ module.exports = (robot) ->
   ##
   # Cancel the entire order and remove all the items
   robot.respond /lunch is over/i, (msg) ->
-    delete robot.brain.data.lunch
-    lunch.clear()
-    msg.send "Lunch is over! http://i.imgur.com/DjUFGk5.png"
+    username = msg.message.user.name
+    if lunch.isJack(username)
+      delete robot.brain.data.lunch
+      lunch.clear()
+      msg.send "Lunch is over! http://i.imgur.com/DjUFGk5.png"
+    else
+      msg.send "Sorry #{username}, only Jack can clear lunches."
+
+  robot.respond /lunch start/i, (msg) ->
+    username = msg.message.user.name
+    if lunch.isJack(username)
+      lunch.clear()
+      msg.send "OK @everyone, it's time to order lunch!"
+      msg.send MESSAGE
+    else
+      msg.send "Sorry #{username}, only Jack can start a new lunch order."
 
   ##
   # Display usage details
