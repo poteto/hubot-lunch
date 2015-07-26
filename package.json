@@ -22,9 +22,7 @@
   },
 
   "dependencies": {
-    "coffee-script": "~1.6",
-    "cron": "1.0.5",
-    "time": "0.11.0"
+    "coffee-script": "~1.6"
   },
 
   "main": "index.coffee"
