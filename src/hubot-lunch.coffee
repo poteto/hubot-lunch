@@ -28,8 +28,8 @@ Let's order lunch!!!1 You can say:
 `beemo lunch show votes` - shows current votes
 """
 
-JACK_COMMANDS = """
-Hi Jack! In addition to the usual commands, you can also tell me:
+ELISE_COMMANDS = """
+Hi Elise! In addition to the usual commands, you can also tell me:
 
 `beemo lunch is over` - cancels all the orders
 `beemo lunch start` - starts a new lunch order
@@ -60,8 +60,8 @@ module.exports = (robot) ->
     clearVotes: ->
       robot.brain.data.voting = {}
 
-    isJack: (user) ->
-      user.indexOf('jack') isnt -1
+    isElise: (user) ->
+      user.indexOf('elise') isnt -1
 
   ##
   # List out all the orders
@@ -88,30 +88,30 @@ module.exports = (robot) ->
   # Cancel the entire order and remove all the items
   robot.respond /lunch is over/i, (msg) ->
     username = msg.message.user.name
-    if lunch.isJack(username)
+    if lunch.isElise(username)
       delete robot.brain.data.lunch
       lunch.clear()
       msg.send "Lunch is over! http://i.imgur.com/DjUFGk5.png"
     else
-      msg.send "Sorry #{username}, only Jack can clear lunches."
+      msg.send "Sorry #{username}, only Elise can clear lunches."
 
   ##
   # Starts a new lunch order and removes all previous items
   robot.respond /lunch start/i, (msg) ->
     username = msg.message.user.name
-    if lunch.isJack(username)
+    if lunch.isElise(username)
       lunch.clear()
       msg.send "OK @everyone, it's time to order lunch!"
       msg.send COMMANDS
     else
-      msg.send "Sorry #{username}, only Jack can start a new lunch order."
+      msg.send "Sorry #{username}, only Elise can start a new lunch order."
 
   ##
   # Display usage details
   robot.respond /lunch help/i, (msg) ->
     username = msg.message.user.name
-    if lunch.isJack(username)
-      msg.send JACK_COMMANDS
+    if lunch.isElise(username)
+      msg.send ELISE_COMMANDS
     else
       msg.send COMMANDS
 
@@ -119,8 +119,8 @@ module.exports = (robot) ->
   # Voting
   robot.respond /lunch new vote (.+)$/i, (msg) ->
     username = msg.message.user.name
-    if !lunch.isJack(username)
-      return msg.send "Sorry #{username}, only Jack can start a new lunch vote."
+    if !lunch.isElise(username)
+      return msg.send "Sorry #{username}, only Elise can start a new lunch vote."
 
     if robot.brain.data.voting.votes?
       msg.send "A vote is already underway"
@@ -134,8 +134,8 @@ module.exports = (robot) ->
 
   robot.respond /lunch end vote/i, (msg) ->
     username = msg.message.user.name
-    if !lunch.isJack(username)
-      return msg.send "Sorry #{username}, only Jack can end the lunch vote."
+    if !lunch.isElise(username)
+      return msg.send "Sorry #{username}, only Elise can end the lunch vote."
 
     if robot.brain.data.voting.votes?
       console.log robot.brain.data.voting.votes
